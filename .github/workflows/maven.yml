@@ -24,3 +24,15 @@ jobs:
         cache: maven
     - name: Build with Maven
       run: mvn -B package --file pom.xml
+      
+    - name: Test with coverage
+      run: |
+        coverage run manage.py test && coverage report --fail-under=75 && coverage xml
+        
+    - name: Report coverage to codecov
+      uses: codecov/codecov-action@v2.1.0
+      with:
+        token: ${{ secrets.CODECOV_TOKEN }}
+        files: ./coverage.xml
+        directory: ./coverage/reports/
+        fail_ci_if_error: true
